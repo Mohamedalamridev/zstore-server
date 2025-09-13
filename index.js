@@ -2,9 +2,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const app = express();
-
+app.use(cookieParser());
 const allowedOrigins = ["http://localhost:5173", "https://z--store.vercel.app"];
 app.use(
   cors({
@@ -30,7 +31,11 @@ mongoose
   });
 
 const ProductRouter = require("./Routes/ProductRoute");
+const userRouter = require("./Routes/userRouter");
+const paymentRoutes = require("./Routes/paymentRout");
+app.use("/api/payment", paymentRoutes);
 app.use("/api/product", ProductRouter);
+app.use("/api/user", userRouter);
 
 process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception:", err);
