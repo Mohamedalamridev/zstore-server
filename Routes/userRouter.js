@@ -4,6 +4,8 @@ const {
   login,
   getProfile,
   logout,
+  deleteAddress,
+  addAddress,
   updateAddress,
 } = require("../Controller/userController");
 const { checkAuthontication } = require("../middleware/authontication");
@@ -13,7 +15,10 @@ router.post("/signup", signup);
 router.post("/login", login);
 router.post("/logout", logout);
 router.get("/profile", authorization, getProfile);
-router.put("/address", authorization, updateAddress);
+router.delete("/profile/address/:id", authorization, deleteAddress);
+router.put("/profile/address/:id", authorization, updateAddress);
+
+router.post("/profile/address", authorization, addAddress);
 router.get("/check", checkAuthontication);
 router.get("/orders", authorization, getAllOrders);
 
