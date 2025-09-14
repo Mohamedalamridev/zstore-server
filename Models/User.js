@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema(
     ],
     addresses: [
       {
-        label: { type: String, default: "Home" }, // اسم العنوان (مثلاً: البيت / الشغل)
+        label: { type: String, default: "Home" },
         street: String,
         city: String,
         state: String,

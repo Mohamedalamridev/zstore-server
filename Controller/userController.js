@@ -79,13 +79,27 @@ module.exports.logout = async (req, res) => {
 
 module.exports.updateAddress = async (req, res) => {
   try {
-    const user = userModel.findById(req.userId);
+    const { label, street, city, state, postalCode, country, phone } = req.body;
+    const user = await userModel.findById(req.userId);
     if (!user) {
       return res.status(404).json({ message: "User Not Found" });
     }
-    user.addresses = [...addresses, req.body];
+
+    user.addresses.push({
+      label,
+      street,
+      city,
+      state,
+      postalCode,
+      country,
+      phone,
+    });
+    console.log(req.body);
+
     await user.save();
-    return res.status(200).json({ message: "Address updated successfully" });
+    return res
+      .status(200)
+      .json({ message: "Address updated successfully", user: user });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
