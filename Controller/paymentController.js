@@ -63,7 +63,7 @@ exports.createPayment = async (req, res) => {
         },
         currency: "EGP",
         integration_id: INTEGRATION_ID,
-        redirect_url: `https://z--store.vercel.app/success/success`,
+        redirect_url: `https://z--store.vercel.app/success`,
       }
     );
 
