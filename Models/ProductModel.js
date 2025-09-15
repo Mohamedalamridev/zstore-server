@@ -38,10 +38,9 @@ const ProductSchema = new mongoose.Schema(
       trim: true,
       default: "General",
     },
-    moreInfo: {
-      type: [String],
-      default: [],
-    },
+    avilableSize: [String],
+    color: String,
+    tags: [String],
 
     isTopSelling: { type: Boolean, default: false },
     isFeatured: { type: Boolean, default: false },

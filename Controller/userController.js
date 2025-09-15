@@ -71,10 +71,14 @@ module.exports.login = async (req, res) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
+        maxAge: 60 * 60 * 1000,
       })
       .status(200)
-      .json({ message: "Login successful", profile: userWithoutPassword });
+      .json({
+        message: "Login successful",
+        profile: userWithoutPassword,
+        isLogin: true,
+      });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -84,7 +88,7 @@ module.exports.getProfile = async (req, res) => {
   const userId = req.userId;
   try {
     const orders = await ordersModel.find({
-      userId: new mongoose.Types.ObjectId(userId),
+      userId: new mongoose.Types.ObjectId(String(userId)),
     });
 
     const user = await userModel.findById(userId).select("-password");
@@ -92,7 +96,7 @@ module.exports.getProfile = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    return res.status(200).json({ user: user, orders: orders });
+    return res.status(200).json({ user: user, orders: orders, isLogin: true });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -132,7 +136,7 @@ module.exports.addAddress = async (req, res) => {
 
     return res.status(201).json({
       message: "Address added successfully",
-      addresses: user.addresses,
+      user,
     });
   } catch (error) {
     console.error("Add Address Error:", error);
@@ -157,7 +161,7 @@ module.exports.deleteAddress = async (req, res) => {
 
     return res.json({
       message: "Address deleted successfully",
-      addresses: user.addresses,
+      user,
     });
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -185,7 +189,7 @@ module.exports.updateAddress = async (req, res) => {
 
     res.json({
       message: "Address updated successfully",
-      addresses: user.addresses,
+      user,
     });
   } catch (error) {
     console.error("Update Address Error:", error);
