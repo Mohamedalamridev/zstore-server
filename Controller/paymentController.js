@@ -24,7 +24,7 @@ exports.createPayment = async (req, res) => {
         auth_token: token,
         delivery_needed: false,
         amount_cents: totalAmount * 100,
-        currency: "EGP",
+        currency: "USD",
         items: items,
       }
     );
