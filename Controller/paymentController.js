@@ -24,7 +24,7 @@ exports.createPayment = async (req, res) => {
         auth_token: token,
         delivery_needed: false,
         amount_cents: totalAmount * 100,
-        currency: "USD",
+        currency: "EGP",
         items: items,
       }
     );
@@ -61,7 +61,7 @@ exports.createPayment = async (req, res) => {
           country: "EG",
           state: "NA",
         },
-        currency: "USD",
+        currency: "EGP",
         integration_id: INTEGRATION_ID,
         redirect_url: `https://z--store.vercel.app/success`,
       }
