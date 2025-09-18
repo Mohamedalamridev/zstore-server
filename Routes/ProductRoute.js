@@ -6,7 +6,7 @@ const {
   deleteOneById,
   findByIdAndUpdate,
 } = require("../Controller/ProductController");
-const { isAdmin } = require("../middleware/Admin");
+const { isAdmin } = require("../middleware/admin");
 router.post("/create", isAdmin, createProduct);
 router.get("/", getProducts);
 router.get("/:id", getOneById);
