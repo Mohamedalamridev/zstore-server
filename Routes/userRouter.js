@@ -8,7 +8,6 @@ const {
   addAddress,
   updateAddress,
 } = require("../Controller/userController");
-const { checkAuthontication } = require("../middleware/authontication");
 const { authorization } = require("../middleware/authorization");
 const { getAllOrders } = require("../Controller/ordersController");
 router.post("/signup", signup);
@@ -19,7 +18,6 @@ router.delete("/profile/address/:id", authorization, deleteAddress);
 router.put("/profile/address/:id", authorization, updateAddress);
 
 router.post("/profile/address", authorization, addAddress);
-router.get("/check", checkAuthontication);
 router.get("/orders", authorization, getAllOrders);
 
 module.exports = router;

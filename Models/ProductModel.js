@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const ProductSchema = new mongoose.Schema(
   {
-    img: {
+    imgs: {
       type: [String],
       validate: {
         validator: function (arr) {
@@ -38,9 +38,14 @@ const ProductSchema = new mongoose.Schema(
       trim: true,
       default: "General",
     },
-    avilableSize: [String],
+    availableSizes: [String],
     color: String,
     tags: [String],
+    stock: {
+      type: Number,
+      default: 0,
+      min: [0, "Stock cannot be negative"],
+    },
 
     isTopSelling: { type: Boolean, default: false },
     isFeatured: { type: Boolean, default: false },

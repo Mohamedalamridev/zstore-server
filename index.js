@@ -34,7 +34,7 @@ const ProductRouter = require("./Routes/ProductRoute");
 const userRouter = require("./Routes/userRouter");
 const paymentRoutes = require("./Routes/paymentRout");
 app.use("/api/payment", paymentRoutes);
-app.use("/api/product", ProductRouter);
+app.use("/api/products", ProductRouter);
 app.use("/api/user", userRouter);
 
 process.on("uncaughtException", (err) => {

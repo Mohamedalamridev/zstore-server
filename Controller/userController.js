@@ -52,15 +52,19 @@ module.exports.login = async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-
+    console.log(user);
     const comparePassword = await bcrypt.compare(password, user.password);
     if (!comparePassword) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
 
     const userWithoutPassword = await userModel
       .findOne({ _id: user._id })
