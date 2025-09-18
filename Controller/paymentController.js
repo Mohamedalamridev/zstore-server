@@ -1,23 +1,20 @@
 // controllers/paymentController.js
 const axios = require("axios");
 const Order = require("../Models/orderModel");
+const User = require(".././Models/User");
+const PAYMOB_API_KEY = process.env.PAYMOB_API_KEY;
 
-const PAYMOB_API_KEY =
-  "ZXlKaGJHY2lPaUpJVXpVeE1pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmpiR0Z6Y3lJNklrMWxjbU5vWVc1MElpd2ljSEp2Wm1sc1pWOXdheUk2TVRBMU5EZzFNeXdpYm1GdFpTSTZJbWx1YVhScFlXd2lmUS5YcWtURjk2bnBQRGVSRXNXT0YyT2hnb0kzUHYtUGdzcS1xSS1yRDZob1ZPc2VYWFktT25fY3poWDlNZVBseGpTUlkxbTUxaUhLS2J2MFJMQ3NJSXN6Zw==";
-
-const INTEGRATION_ID = "5149108";
-const IFRAME_ID = "933665";
+const INTEGRATION_ID = process.env.INTEGRATION_ID;
+const IFRAME_ID = process.env.IFRAME_ID;
 exports.createPayment = async (req, res) => {
-  const { userId, items, totalAmount } = req.body;
-
+  const { userId, items, totalAmount, address } = req.body;
   try {
-    // 1️⃣ Auth Token
+    const user = await User.findById(userId);
     const auth = await axios.post("https://accept.paymob.com/api/auth/tokens", {
       api_key: PAYMOB_API_KEY,
     });
     const token = auth.data.token;
 
-    // 2️⃣ Create Order in Paymob
     const order = await axios.post(
       "https://accept.paymob.com/api/ecommerce/orders",
       {
@@ -29,16 +26,18 @@ exports.createPayment = async (req, res) => {
       }
     );
 
-    // 3️⃣ Save Order in DB
+    //  Save Order in DB
     await Order.create({
       userId,
       items,
+      address,
+      name: user.name,
       totalAmount,
       paymobOrderId: order.data.id,
       paymentStatus: "pending",
     });
 
-    // 4️⃣ Payment Key with Default Billing Data
+    // Payment Key with Default Billing Data
     const paymentKey = await axios.post(
       "https://accept.paymob.com/api/acceptance/payment_keys",
       {
@@ -48,18 +47,18 @@ exports.createPayment = async (req, res) => {
         order_id: order.data.id,
         billing_data: {
           apartment: "NA",
-          email: "customer@example.com",
+          email: user.email,
           floor: "NA",
-          first_name: "Guest",
-          last_name: "User",
-          street: "Cairo",
-          building: "NA",
-          phone_number: "+201234567890",
-          shipping_method: "NA",
-          postal_code: "NA",
-          city: "Cairo",
-          country: "EG",
-          state: "NA",
+          first_name: user.name.split(" ")[0] || "NA",
+          last_name: user.name.split(" ")[1] || "NA",
+          street: address.street || "NA",
+          building: address.street,
+          phone_number: address.phone,
+          shipping_method: "PKG",
+          postal_code: address.postalCode,
+          city: address.city,
+          country: address.country || "EG",
+          state: address.state,
         },
         currency: "EGP",
         integration_id: INTEGRATION_ID,

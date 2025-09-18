@@ -18,6 +18,15 @@ const orderSchema = new mongoose.Schema({
     enum: ["pending", "paid", "failed"],
     default: "pending",
   },
+  address: {
+    name: String,
+    street: { type: String, required: true },
+    city: { type: String, required: true },
+    state: { type: String },
+    postalCode: { type: String },
+    country: { type: String, default: "EG" },
+    phone: { type: String },
+  },
   createdAt: { type: Date, default: Date.now },
 });
 
