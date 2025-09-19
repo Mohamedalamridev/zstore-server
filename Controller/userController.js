@@ -40,6 +40,10 @@ module.exports.signup = async (req, res) => {
 
 module.exports.login = async (req, res) => {
   const { email, password } = req.body;
+  const user = await userModel.findOne({ email: email });
+  if (!user) {
+    return res.status(404).json({ message: "Invalid credentials" });
+  }
   try {
     // Validate input
     if (!email || !password) {
@@ -48,27 +52,18 @@ module.exports.login = async (req, res) => {
         .json({ message: "Email and password are required" });
     }
 
-    const user = await userModel.findOne({ email: email });
-    if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-    console.log(user);
     const comparePassword = await bcrypt.compare(password, user.password);
     if (!comparePassword) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(404).json({ message: "Invalid credentials" });
     }
 
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
-      {
-        expiresIn: "1h",
-      }
+      { expiresIn: "1h" }
     );
 
-    const userWithoutPassword = await userModel
-      .findOne({ _id: user._id })
-      .select("-password");
+    const { password: _, ...userWithoutPassword } = user.toObject();
 
     return res
       .cookie("access-token", token, {
@@ -100,20 +95,16 @@ module.exports.getProfile = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    return res.status(200).json({ user: user, orders: orders, isLogin: true });
+    return res
+      .status(200)
+      .json({ user, orders, isLogin: true, role: user.role });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 };
 
 module.exports.logout = async (req, res) => {
-  res
-    .clearCookie("access-token", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    })
-    .json({ message: "Logout successful" });
+  res.clearCookie("access-token").json({ message: "Logout successful" });
 };
 
 // ِAddresses
@@ -198,5 +189,17 @@ module.exports.updateAddress = async (req, res) => {
   } catch (error) {
     console.error("Update Address Error:", error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports.checkRole = async (req, res) => {
+  try {
+    const role = req.role;
+    if (role === "Admin") {
+      return true;
+    }
+    return res.status(200).json({ state: true });
+  } catch (error) {
+    return res.status(401).json({ message: error.message });
   }
 };

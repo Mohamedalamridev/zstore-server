@@ -7,12 +7,14 @@ const {
   deleteAddress,
   addAddress,
   updateAddress,
+  checkRole,
 } = require("../Controller/userController");
 const { authorization } = require("../middleware/authorization");
 const { getAllOrders } = require("../Controller/ordersController");
+const { isAdmin } = require("../middleware/Admin");
 router.post("/signup", signup);
 router.post("/login", login);
-router.post("/logout", logout);
+router.delete("/logout", logout);
 router.get("/profile", authorization, getProfile);
 router.delete("/profile/address/:id", authorization, deleteAddress);
 router.put("/profile/address/:id", authorization, updateAddress);
