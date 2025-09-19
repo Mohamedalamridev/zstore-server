@@ -11,7 +11,7 @@ const {
 } = require("../Controller/userController");
 const { authorization } = require("../middleware/authorization");
 const { getAllOrders } = require("../Controller/ordersController");
-const { isAdmin } = require("../middleware/Admin");
+const { isAdmin } = require("../middleware/admin");
 router.post("/signup", signup);
 router.post("/login", login);
 router.delete("/logout", logout);
