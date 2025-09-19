@@ -6,7 +6,10 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 app.use(cookieParser());
-const allowedOrigins = ["http://localhost:5173", "https://z--store.vercel.app"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://zstore-fashion.vercel.app",
+];
 app.use(
   cors({
     origin: (origin, callback) => {
