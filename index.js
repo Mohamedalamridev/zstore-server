@@ -36,10 +36,12 @@ mongoose
 const ProductRouter = require("./Routes/ProductRoute");
 const userRouter = require("./Routes/userRouter");
 const paymentRoutes = require("./Routes/paymentRout");
+const ordersRoute = require("./Routes/ordersRoute");
+
 app.use("/api/payment", paymentRoutes);
 app.use("/api/products", ProductRouter);
 app.use("/api/user", userRouter);
-
+app.use("/api/orders", ordersRoute);
 process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception:", err);
 });

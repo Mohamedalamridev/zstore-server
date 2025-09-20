@@ -27,6 +27,17 @@ const orderSchema = new mongoose.Schema({
     country: { type: String, default: "EG" },
     phone: { type: String },
   },
+  status: {
+    type: String,
+    enum: [
+      "Pending",
+      "Processing",
+      "Out for Delivery",
+      "Delivered",
+      "Cancelled",
+    ],
+    default: "Pending",
+  },
   createdAt: { type: Date, default: Date.now },
 });
 

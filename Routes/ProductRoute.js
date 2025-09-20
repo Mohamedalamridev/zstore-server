@@ -7,11 +7,12 @@ const {
   findByIdAndUpdate,
 } = require("../Controller/ProductController");
 const { isAdmin } = require("../middleware/admin");
-router.post("/create", isAdmin, createProduct);
+const { authorization } = require("../middleware/authorization");
+router.post("/create", authorization, isAdmin, createProduct);
 router.get("/", getProducts);
 router.get("/:id", getOneById);
 router.delete("/:id", deleteOneById);
 router.get("/:id", getOneById);
-router.put("/:id", isAdmin, findByIdAndUpdate);
+router.put("/:id", authorization, isAdmin, findByIdAndUpdate);
 
 module.exports = router;
