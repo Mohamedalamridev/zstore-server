@@ -38,6 +38,8 @@ const orderSchema = new mongoose.Schema({
     ],
     default: "Pending",
   },
+  deliveryDateFrom: { type: Date },
+  deliveryDateTo: { type: Date },
   createdAt: { type: Date, default: Date.now },
 });
 

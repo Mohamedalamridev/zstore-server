@@ -7,7 +7,14 @@ const PAYMOB_API_KEY = process.env.PAYMOB_API_KEY;
 const INTEGRATION_ID = process.env.INTEGRATION_ID;
 const IFRAME_ID = process.env.IFRAME_ID;
 exports.createPayment = async (req, res) => {
-  const { userId, items, totalAmount, address } = req.body;
+  const {
+    userId,
+    items,
+    totalAmount,
+    address,
+    deliveryDateFrom,
+    deliveryDateTo,
+  } = req.body;
   try {
     const user = await User.findById(userId);
     const auth = await axios.post("https://accept.paymob.com/api/auth/tokens", {
@@ -27,6 +34,7 @@ exports.createPayment = async (req, res) => {
     );
 
     //  Save Order in DB
+
     await Order.create({
       userId,
       items,
@@ -35,6 +43,8 @@ exports.createPayment = async (req, res) => {
       totalAmount,
       paymobOrderId: order.data.id,
       paymentStatus: "pending",
+      deliveryDateFrom,
+      deliveryDateTo,
     });
 
     // Payment Key with Default Billing Data
@@ -66,7 +76,7 @@ exports.createPayment = async (req, res) => {
       }
     );
 
-    // 5️⃣ Payment Iframe URL
+    // 5 Payment Iframe URL
     const iframeUrl = `https://accept.paymob.com/api/acceptance/iframes/${IFRAME_ID}?payment_token=${paymentKey.data.token}`;
     res.json({ url: iframeUrl });
   } catch (err) {
